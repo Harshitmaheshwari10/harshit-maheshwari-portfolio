@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harshit Maheshwari - IT Student Portfolio</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- External Resources: CSS Frameworks, Fonts, Icon Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts for Inter (general text) and Montserrat (headings) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Internal CSS Styles (Best practice is usually external .css files, but for single-file demos, <style> is common) -->
     <style>
         :root {
             --primary-dark: #1a202c; /* Dark charcoal for primary elements */
@@ -321,7 +320,7 @@
                 <a href="mailto:harshitmaheshwari321@gmail.com" class="social-link" aria-label="Email">
                     <i class="fas fa-envelope"></i>
                 </a>
-                <a href="https://linkedin.com/in/harshitmaheshwari" target="_blank" class="social-link" aria-label="LinkedIn">
+                <a href="https://www.linkedin.com/in/harshit-maheshwari-920b78361/?lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3BlR9THczURnOPWHKS0w3u9A%3D%3D" target="_blank" class="social-link" aria-label="LinkedIn">
                     <i class="fab fa-linkedin"></i>
                 </a>
                 <a href="https://github.com/Harshitmaheshwari10" target="_blank" class="social-link" aria-label="GitHub">
@@ -551,40 +550,14 @@
     <!-- Footer Section -->
     <footer class="bg-primary-dark text-white py-8 text-center mt-12">
         <div class="container-main">
-            <p class="mb-2 text-gray-400">&copy; 2024 Harshit Maheshwari. All rights reserved.</p>
-            <p class="text-sm text-gray-500">Designed & Developed with Passion</p>
+            <p class="mb-2 text-gray-400">&copy; 2025 Harshit Maheshwari. All rights reserved.</p>
+            <p class="text-sm text-gray-500">designed with passion</p>
         </div>
     </footer>
 
     <script>
         const contactForm = document.getElementById('contactForm');
         const formMessage = document.getElementById('formMessage');
-
-        // Function for exponential backoff retry
-        async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) {
-                        return response;
-                    } else if (response.status === 429 && i < retries - 1) { // Too Many Requests
-                        console.warn(`Rate limit hit, retrying in ${delay / 1000}s...`);
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        delay *= 2; // Exponential backoff
-                    } else {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                } catch (error) {
-                    if (i < retries - 1) {
-                        console.warn(`Fetch error: ${error.message}, retrying in ${delay / 1000}s...`);
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        delay *= 2;
-                    } else {
-                        throw error; // Re-throw if it's the last retry
-                    }
-                }
-            }
-        }
 
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault(); // Prevent default form submission
@@ -595,61 +568,40 @@
 
             const formData = new FormData(contactForm);
             const data = Object.fromEntries(formData.entries());
-            const messageContent = data.message;
 
             // Simple loading indicator
             contactForm.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> Sending...';
             contactForm.querySelector('button[type="submit"]').disabled = true;
 
             try {
-                // IMPORTANT: For Canvas environment, leave API_KEY as empty string.
-                // Canvas will automatically provide it in runtime.
-                // If deploying this file outside Canvas, replace "" with your actual Gemini API key.
-                const API_KEY = ""; // Canvas will inject API key at runtime
-
-                let chatHistory = [];
-                const prompt = `Categorize the following message into one of these types: "Job Inquiry", "Collaboration Opportunity", "General Feedback", "Other". Provide only the category name, without any extra text or punctuation. If unsure, choose "Other".\n\nMessage: "${messageContent}"`;
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-
-                const payload = {
-                    contents: chatHistory,
-                    generationConfig: {
-                        responseMimeType: "text/plain", // Request plain text for categorization
-                    }
-                };
-
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
-
-                const geminiResponse = await fetchWithRetry(apiUrl, {
+                // IMPORTANT: This fetch call now targets your Vercel Serverless Function
+                // This will be at YOUR_VERCEL_URL/api/contact
+                const response = await fetch('/api/contact', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
                 });
 
-                if (!geminiResponse.ok) {
-                    const errorText = await geminiResponse.text();
-                    console.error("Gemini API error response:", errorText);
-                    throw new Error(`Gemini API failed: ${errorText}`);
+                if (response.ok) {
+                    const result = await response.json();
+                    formMessage.classList.remove('hidden');
+                    formMessage.classList.add('success');
+                    // Display the categorized message from the backend
+                    formMessage.innerHTML = `Message sent successfully! 😊 Your message was categorized as: <strong>${result.category}</strong>.`;
+                    contactForm.reset(); // Clear the form
+                } else {
+                    const errorData = await response.json();
+                    formMessage.classList.remove('hidden');
+                    formMessage.classList.add('error');
+                    formMessage.innerHTML = `Failed to send message: ${errorData.error || 'Unknown error.'}`;
                 }
-
-                const geminiResult = await geminiResponse.json();
-                let category = "Uncategorized"; // Default if parsing fails
-                if (geminiResult && geminiResult.candidates && geminiResult.candidates.length > 0 &&
-                    geminiResult.candidates[0].content && geminiResult.candidates[0].content.parts &&
-                    geminiResult.candidates[0].content.parts.length > 0) {
-                    category = geminiResult.candidates[0].content.parts[0].text.trim();
-                }
-
-                formMessage.classList.remove('hidden');
-                formMessage.classList.add('success');
-                formMessage.innerHTML = `Message sent successfully! 😊 Your message was categorized as: <strong>${category}</strong>.`;
-                contactForm.reset(); // Clear the form
-
             } catch (error) {
-                console.error('Frontend error submitting form:', error);
+                console.error('Error submitting form to Vercel API:', error);
                 formMessage.classList.remove('hidden');
                 formMessage.classList.add('error');
-                formMessage.innerHTML = `An error occurred: ${error.message}. Please try again later.`;
+                formMessage.innerHTML = 'An unexpected error occurred. Please try again later. Check console for details.';
             } finally {
                 contactForm.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-paper-plane mr-3"></i> Send Message';
                 contactForm.querySelector('button[type="submit"]').disabled = false;

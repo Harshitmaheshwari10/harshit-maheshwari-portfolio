@@ -80,15 +80,6 @@
             padding: 6rem 0; /* py-24 */
         }
 
-        .card-modern {
-            background-color: white;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: var(--shadow-subtle);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--medium-gray);
-            padding: 2.5rem; /* p-10 */
-        }
-
         .card-modern:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-card-hover);
@@ -525,7 +516,6 @@
                 <p class="text-lg mb-6 text-text-secondary">
                     I'm always open to new opportunities, collaborations, and interesting discussions. Feel free to reach out!
                 </p>
-                <!-- Vercel Forms: Add name attribute and data-vercel-form -->
                 <form id="contactForm" name="contact" method="POST" data-vercel-form class="text-left">
                     <!-- This hidden input is crucial for Vercel to identify the form -->
                     <input type="hidden" name="form-name" value="contact" />
@@ -578,7 +568,7 @@
 
             try {
                 // Submit the form data using fetch. Vercel will intercept this POST request.
-                // Using contactForm.action ensures it posts to the current page's URL, which Vercel intercepts.
+                // The form's 'name' attribute and hidden 'form-name' input are key for Vercel.
                 const response = await fetch(contactForm.action || window.location.pathname, {
                     method: 'POST',
                     body: formData, // Use FormData directly for Vercel forms

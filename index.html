@@ -578,34 +578,36 @@
 
             try {
                 // Submit the form data using fetch. Vercel will intercept this POST request.
+                // Using contactForm.action ensures it posts to the current page's URL, which Vercel intercepts.
                 const response = await fetch(contactForm.action || window.location.pathname, {
                     method: 'POST',
                     body: formData, // Use FormData directly for Vercel forms
                     headers: {
-                        'Accept': 'application/json' // Important for Vercel to return JSON response
+                        'Accept': 'application/json' // Crucial for Vercel to return a JSON response for AJAX
                     }
                 });
 
                 if (response.ok) {
-                    // Vercel returns a simple success JSON or redirects.
-                    // For AJAX, it usually returns { success: true }
+                    // Vercel returns a simple success JSON { success: true } for AJAX submissions.
                     formMessage.classList.remove('hidden');
                     formMessage.classList.add('success');
                     formMessage.innerHTML = `Message sent successfully! 😊 I'll get back to you soon.`;
                     contactForm.reset(); // Clear the form
                 } else {
-                    // Handle potential errors from Vercel's side (e.g., misconfiguration, spam detection)
-                    const errorText = await response.text(); // Get raw error text
+                    // If response.ok is false, it means Vercel rejected the submission.
+                    // This could be due to spam detection, missing form attributes, or other Vercel-side issues.
+                    const errorText = await response.text(); // Get raw error text from Vercel
                     console.error('Vercel form submission error:', response.status, errorText);
                     formMessage.classList.remove('hidden');
                     formMessage.classList.add('error');
-                    formMessage.innerHTML = `Failed to send message. Please try again or contact me directly via email.`;
+                    formMessage.innerHTML = `Failed to send message. Please try again or contact me directly via email. (Error: ${response.status})`;
                 }
             } catch (error) {
+                // This catches network errors or other unexpected JavaScript issues.
                 console.error('Network or unexpected error during form submission:', error);
                 formMessage.classList.remove('hidden');
                 formMessage.classList.add('error');
-                formMessage.innerHTML = 'An unexpected error occurred. Please try again later.';
+                formMessage.innerHTML = 'An unexpected error occurred. Please try again later. Check your browser console for details.';
             } finally {
                 contactForm.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-paper-plane mr-3"></i> Send Message';
                 contactForm.querySelector('button[type="submit"]').disabled = false;

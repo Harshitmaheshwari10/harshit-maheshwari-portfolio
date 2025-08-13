@@ -4,72 +4,555 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harshit Maheshwari - IT Student Portfolio</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Inter (general text) and Montserrat (headings) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Keep all your existing CSS here */
-        /* I am not removing any of your styles */
+        :root {
+            --primary-dark: #1a202c; /* Dark charcoal for primary elements */
+            --accent-blue: #4299e1; /* Professional blue accent */
+            --light-gray: #f8f8f8; /* Off-white background */
+            --medium-gray: #e2e8f0; /* Light border/background for elements */
+            --text-main: #2d3748; /* Darker text */
+            --text-secondary: #4a5568; /* Slightly lighter text */
+            --shadow-subtle: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-hover: 0 4px 10px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-card-hover: 0 15px 30px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.08);
+        }
+
+        html {
+            scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-main);
+            line-height: 1.7;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom Scrollbar Styling (Webkit browsers like Chrome, Safari) */
+        body::-webkit-scrollbar {
+            width: 10px; /* Width of the scrollbar */
+        }
+
+        body::-webkit-scrollbar-track {
+            background: var(--light-gray); /* Color of the scrollbar track */
+            border-radius: 5px;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: var(--accent-blue); /* Color of the scrollbar thumb */
+            border-radius: 5px;
+            border: 2px solid var(--light-gray); /* Creates a padded look */
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background-color: #3182ce; /* Darker blue on hover */
+        }
+
+        /* Firefox scrollbar styling */
+        html {
+            scrollbar-width: thin; /* "auto" or "thin" */
+            scrollbar-color: var(--accent-blue) var(--light-gray); /* thumb and track color */
+        }
+
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .container-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem; /* px-6 */
+        }
+
+        .section-padding {
+            padding: 6rem 0; /* py-24 */
+        }
+
+        .card-modern {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: var(--shadow-subtle);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--medium-gray);
+            padding: 2.5rem; /* p-10 */
+        }
+
+        .card-modern:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .btn-accent {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 2.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: var(--accent-blue);
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: var(--shadow-subtle);
+            letter-spacing: 0.05em;
+        }
+
+        .btn-accent:hover {
+            background-color: #3182ce; /* Slightly darker blue */
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        .btn-accent:active {
+            transform: translateY(0);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-link {
+            color: white;
+            font-size: 1.8rem;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+        .social-link:hover {
+            color: var(--medium-gray);
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        /* Hero section specific styles */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #3a475a 100%);
+            color: white;
+            padding: 10rem 0; /* py-40 */
+            position: relative;
+            overflow: hidden;
+            border-bottom-left-radius: 30% 10%; /* More subtle curve */
+            border-bottom-right-radius: 30% 10%;
+            animation: fadeIn 1.2s ease-out;
+            z-index: 1; /* Ensure content is above wave */
+        }
+
+        /* Wave effect for hero section bottom */
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; /* Adjust to hide overflow line */
+            left: 0;
+            width: 100%;
+            height: 120px; /* Height of the wave */
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg"><path fill="%23f8f8f8" fill-opacity="1" d="M0,64L60,69.3C120,75,240,85,360,80C480,75,600,59,720,53.3C840,48,960,53,1080,64C1200,75,1320,91,1380,98.7L1440,107L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>') no-repeat center bottom;
+            background-size: cover;
+            transform: translateY(0%);
+            z-index: 2; /* Wave above hero content */
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-image {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            object-fit: cover;
+            box-shadow: var(--shadow-hover);
+            animation: pulseFade 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseFade {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.03); opacity: 0.95; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 3rem; /* text-5xl */
+            font-weight: 800; /* font-extrabold */
+            text-align: center;
+            margin-bottom: 4rem; /* mb-16 */
+            color: var(--primary-dark);
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px; /* Adjust based on desired spacing */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background-color: var(--accent-blue);
+            border-radius: 3px;
+            animation: expandLine 1s ease-out forwards;
+        }
+
+        @keyframes expandLine {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        .icon-card-wrapper {
+            font-size: 2.8rem;
+            color: var(--accent-blue);
+            flex-shrink: 0;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid var(--medium-gray);
+            margin-bottom: 1.5rem; /* mb-6 */
+            transition: all 0.3s ease;
+        }
+        .icon-card-wrapper:hover {
+            box-shadow: var(--shadow-hover);
+            transform: scale(1.05);
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            background-color: var(--medium-gray);
+            color: var(--text-secondary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px; /* More pill-like */
+            margin: 0.6rem 0.6rem 0.6rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1); /* Inner shadow for depth */
+        }
+        .skill-badge:hover {
+            background-color: var(--accent-blue);
+            color: white;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        /* Form specific styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--medium-gray);
+            background-color: white;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* ring-blue-200 */
+        }
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .message-box {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .message-box.success {
+            background-color: #d4edda; /* Green-100 */
+            color: #155724; /* Green-800 */
+            border: 1px solid #c3e6cb;
+        }
+        .message-box.error {
+            background-color: #f8d7da; /* Red-100 */
+            color: #721c24; /* Red-800 */
+            border: 1px solid #f5c6cb;
+        }
+
+
+        /* Responsive grid adjustments */
+        @media (min-width: 768px) {
+            .grid-cols-md-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .grid-cols-lg-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
-
     <!-- Hero Section -->
-    <!-- (Your existing hero section code here — unchanged) -->
+    <section class="hero-section text-center">
+        <div class="container-main py-12 relative z-20">
+            <!-- Placeholder Image - Consider adding your actual photo here -->
+            <img src="https://placehold.co/160x160/0a1a2b/ffffff?text=HM" alt="Harshit Maheshwari Profile" class="profile-image mx-auto mb-8">
+            <h1 class="text-6xl lg:text-7xl font-extrabold mb-4 leading-tight text-white">Harshit Maheshwari</h1>
+            <p class="text-xl lg:text-2xl font-light opacity-90 mb-10 text-gray-200">IT Student | Manipal University Jaipur</p>
+            <div class="flex justify-center space-x-8 text-3xl mb-12">
+                <a href="mailto:harshitmaheshwari321@gmail.com" class="social-link" aria-label="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/harshit-maheshwari-920b78361/?lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3BlR9THczURnOPWHKS0w3u9A%3D%3D" target="_blank" class="social-link" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com/Harshitmaheshwari10" target="_blank" class="social-link" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="tel:+919755498881" class="social-link" aria-label="Phone">
+                    <i class="fas fa-phone"></i>
+                </a>
+            </div>
+            <!-- Download Resume Button -->
+            <a href="./resume new updated.pdf" download="Harshit_Maheshwari_Resume.pdf" class="btn-accent text-xl">
+                <i class="fas fa-download mr-3"></i> Download Resume
+            </a>
+        </div>
+    </section>
 
     <div class="container-main">
 
         <!-- About Section -->
-        <!-- (Your existing about section code here — unchanged) -->
-
-        <!-- Skills Section -->
-        <!-- (Your existing skills section code here — unchanged) -->
-
-        <!-- Projects Section -->
-        <!-- (Your existing projects section code here — unchanged) -->
-
-        <!-- Experience Section -->
-        <!-- (Your existing experience section code here — unchanged) -->
-
-        <!-- Education Section -->
-        <!-- (Your existing education section code here — unchanged) -->
-
-        <!-- Achievements & Certifications Section -->
-        <!-- (Your existing achievements section code here — unchanged) -->
-
-        <!-- Contact Section -->
-        <section id="contact" class="section-padding pt-0">
-            <h2 class="section-title">Get in Touch</h2>
-            <div class="card-modern max-w-2xl mx-auto text-center">
-                <p class="text-lg mb-6 text-text-secondary">
-                    I'm always open to new opportunities, collaborations, and interesting discussions. Feel free to reach out!
+        <section id="about" class="section-padding">
+            <h2 class="section-title">Overview</h2>
+            <div class="card-modern max-w-4xl mx-auto">
+                <p class="text-lg text-center leading-relaxed text-text-secondary">
+                    I am eager to join your company as an intern to gain hands-on experience and apply my academic knowledge in a real-world environment.
+                    This opportunity will help me enhance my technical and professional skills while contributing to your ongoing projects.
+                    I am enthusiastic about learning from industry experts and growing as a future professional.
                 </p>
-
-                <!-- Fixed Vercel Native Form -->
-                <form name="contact" method="POST" data-vercel="true" class="text-left">
-                    <input type="hidden" name="form-name" value="contact">
-
-                    <div class="form-group">
-                        <label for="name" class="form-label">Name:</label>
-                        <input type="text" id="name" name="name" class="form-input" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" id="email" name="email" class="form-input" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message" class="form-label">Message:</label>
-                        <textarea id="message" name="message" class="form-textarea" required></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-accent w-full justify-center">
-                        <i class="fas fa-paper-plane mr-3"></i> Send Message
-                    </button>
-                </form>
             </div>
         </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section-padding pt-0">
+            <h2 class="section-title">Skills</h2>
+            <div class="card-modern max-w-5xl mx-auto">
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-primary-dark mb-4">Technical Skills:</h3>
+                    <div class="flex flex-wrap -m-2">
+                        <span class="skill-badge m-2">C</span>
+                        <span class="skill-badge m-2">C++</span>
+                        <span class="skill-badge m-2">Java</span>
+                        <span class="skill-badge m-2">OOPS</span>
+                        <span class="skill-badge m-2">Python</span>
+                        <span class="skill-badge m-2">DSA</span>
+                        <span class="skill-badge m-2">PHP</span>
+                        <span class="skill-badge m-2">HTML</span>
+                        <span class="skill-badge m-2">CSS</span>
+                        <span class="skill-badge m-2">JavaScript</span>
+                        <span class="skill-badge m-2">SQL</span>
+                        <span class="skill-badge m-2">RDBMS</span>
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-primary-dark mb-4">Tools:</h3>
+                    <div class="flex flex-wrap -m-2">
+                        <span class="skill-badge m-2">GitHub</span>
+                        <span class="skill-badge m-2">Linux</span>
+                        <span class="skill-badge m-2">Matlab</span>
+                        <span class="skill-badge m-2">Autocad-2D</span>
+                        <span class="skill-badge m-2">Arduino IDE</span>
+                        <span class="skill-badge m-2">Advanced IOT</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-primary-dark mb-4">Soft Skills:</h3>
+                    <div class="flex flex-wrap -m-2">
+                        <span class="skill-badge m-2">Communication</span>
+                        <span class="skill-badge m-2">Leadership</span>
+                        <span class="skill-badge m-2">Problem Solving</span>
+                        <span class="skill-badge m-2">Attention to Detail</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section-padding pt-0">
+            <h2 class="section-title">Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-md-2 lg:grid-cols-lg-3 gap-8">
+                <div class="card-modern flex flex-col items-center text-center">
+                    <div class="icon-card-wrapper"><i class="fas fa-calculator"></i></div>
+                    <h3 class="text-2xl font-semibold text-primary-dark mb-2">GPA Calculator</h3>
+                    <p class="text-accent-blue font-medium text-lg mb-3">HTML, CSS, JS | March 2025</p>
+                    <p class="text-text-secondary leading-relaxed mb-6">
+                        A simple yet effective tool that allows students to calculate their Grade Point Average based on their course grades and credit hours.
+                        It ensures accuracy and helps users keep track of academic performance in a user-friendly interface.
+                    </p>
+                    <div class="flex justify-center space-x-4 mt-auto">
+                        <!-- Add project links if available -->
+                        <!-- <a href="#" target="_blank" class="btn-accent"><i class="fab fa-github mr-2"></i> GitHub</a> -->
+                    </div>
+                </div>
+                <div class="card-modern flex flex-col items-center text-center">
+                    <div class="icon-card-wrapper"><i class="fas fa-robot"></i></div>
+                    <h3 class="text-2xl font-semibold text-primary-dark mb-2">ED-TECH Platform for Underserved Students</h3>
+                    <p class="text-accent-blue font-medium text-lg mb-3">ML Model, HTML, CSS, JS, API | March 2025</p>
+                    <p class="text-text-secondary leading-relaxed mb-6">
+                        An AI-powered chatbot designed to provide career counseling to underserved kids. It aims to make guidance accessible,
+                        personalized, and supportive, especially for students who may not have regular access to mentors or counselors.
+                    </p>
+                    <div class="flex justify-center space-x-4 mt-auto">
+                        <!-- Add project links if available -->
+                    </div>
+                </div>
+                <div class="card-modern flex flex-col items-center text-center">
+                    <div class="icon-card-wrapper"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3 class="text-2xl font-semibold text-primary-dark mb-2">Arduino Based Geofencing</h3>
+                    <p class="text-accent-blue font-medium text-lg mb-3">Arduino IDE, Advanced IOT | August 2024</p>
+                    <p class="text-text-secondary leading-relaxed mb-6">
+                        Developed an Arduino-based geofence system using GPS and GSM modules to monitor location and trigger alerts upon boundary breaches.
+                        Designed for real-time tracking in applications like vehicle security and asset monitoring.
+                    </p>
+                    <div class="flex justify-center space-x-4 mt-auto">
+                        <!-- Add project links if available -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="section-padding pt-0">
+            <h2 class="section-title">Experience</h2>
+            <div class="grid grid-cols-1 gap-8">
+                <div class="card-modern flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
+                    <div class="icon-card-wrapper flex-shrink-0"><i class="fas fa-bullhorn"></i></div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-primary-dark mb-1">Marketing Head - ACM</h3>
+                        <p class="text-accent-blue font-medium text-lg mb-3">Manipal University Jaipur | May 2024 – December 2024</p>
+                        <ul class="list-disc list-inside text-text-secondary leading-relaxed space-y-1">
+                            <li>Led a team dedicated to promoting technical events, workshops, and hackathons to maximize student participation and engagement.</li>
+                            <li>Crafted effective communication strategies, managed social media campaigns, designed promotional materials, and analyzed outreach performance.</li>
+                            <li>Collaborated closely with event organizers and technical teams to ensure marketing efforts aligned with event goals, helping significantly boost ACM's presence and impact on campus.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="section-padding pt-0">
+            <h2 class="section-title">Education</h2>
+            <div class="grid grid-cols-1 md:grid-cols-md-2 gap-8">
+                <div class="card-modern flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
+                    <div class="icon-card-wrapper flex-shrink-0"><i class="fas fa-university"></i></div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-primary-dark mb-1">Bachelor of Technology (Information Technology)</h3>
+                        <p class="text-accent-blue font-medium text-lg mb-3">Manipal University Jaipur | 2023 – 2027</p>
+                        <ul class="list-disc list-inside text-text-secondary leading-relaxed space-y-1">
+                            <li>GPA: 9.16 (I-9.00, II-9.17, III-9.04, IV-9.43)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-modern flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
+                    <div class="icon-card-wrapper flex-shrink-0"><i class="fas fa-school"></i></div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-primary-dark mb-1">Higher Secondary Education (Science)</h3>
+                        <p class="text-accent-blue font-medium text-lg mb-3">N.S. Singhvi H.S. School | 2020 – 2022</p>
+                        <ul class="list-disc list-inside text-text-secondary leading-relaxed space-y-1">
+                            <li>GPA: 85%</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-modern flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
+                    <div class="icon-card-wrapper flex-shrink-0"><i class="fas fa-school"></i></div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-primary-dark mb-1">Secondary Education (Information Technology)</h3>
+                        <p class="text-accent-blue font-medium text-lg mb-3">Lotus Valley School | 2007 – 2020</p>
+                        <ul class="list-disc list-inside text-text-secondary leading-relaxed space-y-1">
+                            <li>GPA: 92.8%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements & Certifications Section -->
+        <section id="achievements-certifications" class="section-padding pt-0">
+            <h2 class="section-title">Achievements & Certifications</h2>
+            <div class="card-modern max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <h3 class="text-2xl font-bold text-primary-dark mb-3">Achievements:</h3>
+                    <ul class="list-disc list-inside text-text-secondary leading-relaxed space-y-1">
+                        <li>**Top 20** - IEEE Hackerzstreet 3.0</li>
+                        <li>Participation - SIH (Smart India Hackathon)</li>
+                        <li>Dean's List of Excellence (x4) - Manipal University Jaipur</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-primary-dark mb-3">Certifications:</h3>
+                    <ul class="list-disc list-inside text-text-secondary leading-relaxed space-y-1">
+                        <li>Hackerzstreet 3.0 Hackathon Certificate</li>
+                        <li>Red Hat Operating Systems Certificate</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <!-- Contact Section -->
+<section id="contact" class="section-padding pt-0">
+    <h2 class="section-title">Get in Touch</h2>
+    <div class="card-modern max-w-2xl mx-auto text-center">
+        <p class="text-lg mb-6 text-text-secondary">
+            I'm always open to new opportunities, collaborations, and interesting discussions. Feel free to reach out!
+        </p>
+
+        <!-- Fixed for Vercel Native Form -->
+        <form name="contact" method="POST" data-vercel="true" class="text-left">
+            <input type="hidden" name="form-name" value="contact">
+
+            <div class="form-group">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" id="name" name="name" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message" class="form-label">Message:</label>
+                <textarea id="message" name="message" class="form-textarea" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-accent w-full justify-center">
+                <i class="fas fa-paper-plane mr-3"></i> Send Message
+            </button>
+        </form>
+    </div>
+</section>
+
 
     </div>
 
@@ -81,5 +564,6 @@
         </div>
     </footer>
 
+   
 </body>
 </html>

@@ -525,7 +525,11 @@
                 <p class="text-lg mb-6 text-text-secondary">
                     I'm always open to new opportunities, collaborations, and interesting discussions. Feel free to reach out!
                 </p>
-                <form id="contactForm" class="text-left">
+                <!-- Vercel Forms: Add name attribute and data-vercel-form -->
+                <form id="contactForm" name="contact" method="POST" data-vercel-form class="text-left">
+                    <!-- This hidden input is crucial for Vercel to identify the form -->
+                    <input type="hidden" name="form-name" value="contact" />
+
                     <div class="form-group">
                         <label for="name" class="form-label">Name:</label>
                         <input type="text" id="name" name="name" class="form-input" required>
@@ -568,41 +572,40 @@
             formMessage.innerHTML = '';
 
             const formData = new FormData(contactForm);
-            const data = Object.fromEntries(formData.entries());
 
-            // Simple loading indicator
             contactForm.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> Sending...';
             contactForm.querySelector('button[type="submit"]').disabled = true;
 
             try {
-                // IMPORTANT: This fetch call now targets your Vercel Serverless Function
-                // This will be at YOUR_VERCEL_URL/api/contact
-                const response = await fetch('/api/contact', {
+                // Submit the form data using fetch. Vercel will intercept this POST request.
+                const response = await fetch(contactForm.action || window.location.pathname, {
                     method: 'POST',
+                    body: formData, // Use FormData directly for Vercel forms
                     headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
+                        'Accept': 'application/json' // Important for Vercel to return JSON response
+                    }
                 });
 
                 if (response.ok) {
-                    const result = await response.json();
+                    // Vercel returns a simple success JSON or redirects.
+                    // For AJAX, it usually returns { success: true }
                     formMessage.classList.remove('hidden');
                     formMessage.classList.add('success');
-                    // Display the categorized message from the backend
-                    formMessage.innerHTML = `Message sent successfully! 😊 Your message was categorized as: <strong>${result.category}</strong>.`;
+                    formMessage.innerHTML = `Message sent successfully! 😊 I'll get back to you soon.`;
                     contactForm.reset(); // Clear the form
                 } else {
-                    const errorData = await response.json();
+                    // Handle potential errors from Vercel's side (e.g., misconfiguration, spam detection)
+                    const errorText = await response.text(); // Get raw error text
+                    console.error('Vercel form submission error:', response.status, errorText);
                     formMessage.classList.remove('hidden');
                     formMessage.classList.add('error');
-                    formMessage.innerHTML = `Failed to send message: ${errorData.error || 'Unknown error.'}`;
+                    formMessage.innerHTML = `Failed to send message. Please try again or contact me directly via email.`;
                 }
             } catch (error) {
-                console.error('Error submitting form to Vercel API:', error);
+                console.error('Network or unexpected error during form submission:', error);
                 formMessage.classList.remove('hidden');
                 formMessage.classList.add('error');
-                formMessage.innerHTML = 'An unexpected error occurred. Please try again later. Check console for details.';
+                formMessage.innerHTML = 'An unexpected error occurred. Please try again later.';
             } finally {
                 contactForm.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-paper-plane mr-3"></i> Send Message';
                 contactForm.querySelector('button[type="submit"]').disabled = false;

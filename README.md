@@ -21,7 +21,6 @@ Welcome to my personal portfolio website! This project showcases my skills, proj
 - HTML5
 - CSS3
 - JavaScript
-- Responsive Design
 - Vercel (Deployment)
 
 ## 📂 Project Structure
